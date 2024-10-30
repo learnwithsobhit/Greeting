@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Diwali!</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="welcome">
+    <h2>Enter your name to receive a personalized Diwali greeting: 😊</h2>
+    <input type="text" id="nameInput" placeholder="Enter your name" />
+    <button id="startButton">🎶 Start Diwali Celebration 🎶</button>
+  </div>
+
+  <div class="container hidden">
+    <div class="message">
+      <h1>🎆 Happy Diwali 🎆</h1>
+      <p id="personalizedMessage">✨🪔✨🪔✨🪔✨🪔May your life be filled with joy, light, and prosperity! ✨🪔✨🪔✨🪔✨🪔</p>
+    </div>
+    <div class="firecrackers">
+      <div class="cracker sparkle"></div>
+      <div class="cracker sparkle"></div>
+      <div class="cracker sparkle"></div>
+    </div>
+    <div class="sweets">
+      <div class="sweet glow">🍬</div>
+      <div class="sweet glow">🍫</div>
+      <div class="sweet glow">🍭</div>
+      <div class="sweet glow">😋</div>
+    </div>
+  </div>
+
+  <!-- Sound elements -->
+  <audio id="firecrackerSound" src="firecracker.mp3"></audio>
+  <audio id="backgroundMusic" src="background.mp3" loop></audio>
+
+  <script src="script.js"></script>
+</body>
+</html>
