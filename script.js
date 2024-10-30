@@ -13,9 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Set personalized message if name is provided
     if (name) {
-      personalizedMessage.textContent = `Happy Diwali, ${name}! ✨🪔✨🪔✨🪔✨🪔 May your life be filled with joy, light, and prosperity! ✨🪔✨🪔✨🪔✨🪔`;
-    } else {
-      personalizedMessage.textContent = `✨🪔✨🪔✨🪔✨🪔 May your life be filled with joy, light, and prosperity! ✨🪔✨🪔✨🪔✨🪔`;
+      headMessage.textContent = `🎆 Happy Diwali,  ${name}! 🎆`;
     }
 
     // Play background music
