@@ -11,6 +11,24 @@ document.addEventListener('DOMContentLoaded', () => {
   startButton.addEventListener('click', () => {
     const name = nameInput.value.trim();
     
+    const visitorData = {
+      name: name,
+      timestamp: new Date().toISOString(),
+      userAgent: navigator.userAgent
+    };
+
+    // Send notification via Netlify function
+    fetch('/.netlify/functions/send-telegram', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(visitorData)
+    })
+    .then(response => response.json())
+    .then(data => console.log('Notification sent:', data))
+    .catch(error => console.error('Error sending notification:', error));
+
     // Set personalized message if name is provided
     if (name) {
       headMessage.textContent = `🎆 Happy Diwali,  ${name}! 🎆`;
