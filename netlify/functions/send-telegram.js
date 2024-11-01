@@ -7,7 +7,7 @@ exports.handler = async function(event, context) {
   }
 
   try {
-    const { name, timestamp, userAgent } = JSON.parse(event.body);
+    const { name, timestamp, userAgent , photoUrl, photographer} = JSON.parse(event.body);
     const deviceType = /Mobile/.test(userAgent) ? '📱 Mobile' : '💻 Desktop';
     const date = new Date(timestamp);
 
@@ -18,6 +18,8 @@ exports.handler = async function(event, context) {
 *Time:* ${date.toLocaleTimeString()}
 *Date:* ${date.toLocaleDateString()}
 *Device:* ${deviceType}
+*Photo:* ${photoUrl}
+*Photographer:* ${photographer}
 `;
 
     // Send Telegram notification

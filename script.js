@@ -8,41 +8,52 @@ document.addEventListener('DOMContentLoaded', () => {
   const firecrackerSound = document.getElementById('firecrackerSound');
   const crackers = document.querySelectorAll('.cracker');
 
+  let visitorData; // Declare at a higher scope
+
   startButton.addEventListener('click', () => {
     const name = nameInput.value.trim();
-    
-    const visitorData = {
-      name: name,
-      timestamp: new Date().toISOString(),
-      userAgent: navigator.userAgent
-    };
 
-    // Send to MongoDB
-    fetch('/.netlify/functions/store-greeting', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(visitorData)
-    })
-    .then(response => response.json())
-    .catch(error => console.error('Error storing greeting:', error));
+    // First fetch the photo
+    fetch('/.netlify/functions/get-celebrity-photo')
+      .then(photoResponse => photoResponse.json())
+      .then(photoData => {
+        // Create visitorData after we have the photo info
+        visitorData = {
+          name: name,
+          timestamp: new Date().toISOString(),
+          userAgent: navigator.userAgent,
+          photoUrl: photoData.imageUrl,
+          photographer: photoData.photographer
+        };
 
+        // Update the UI
+        document.getElementById('celebrityPhoto').src = photoData.imageUrl;
+        document.getElementById('photoCredit').textContent = `Photo by ${photoData.photographer} on Unsplash`;
+        headMessage.textContent = `🎆 Happy Diwali, ${name}! 🎆`;
 
-    // Send notification via Netlify function
-    fetch('/.netlify/functions/send-telegram', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(visitorData)
-    })
-    .then(response => response.json())
-    .then(data => console.log('Notification sent:', data))
-    .catch(error => console.error('Error sending notification:', error));
-
-    // Set personalized message if name is provided
-    if (name) {
-      headMessage.textContent = `🎆 Happy Diwali,  ${name}! 🎆`;
-    }
+        // Now send to MongoDB with complete data
+        return fetch('/.netlify/functions/store-greeting', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(visitorData)
+        });
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Stored in MongoDB:', data);
+        
+        // Send Telegram notification after MongoDB storage is complete
+        return fetch('/.netlify/functions/send-telegram', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(visitorData)
+        });
+      })
+      .then(response => response.json())
+      .then(data => console.log('Notification sent:', data))
+      .catch(error => console.error('Error:', error));
 
     // Play background music
     backgroundMusic.play()

@@ -14,7 +14,7 @@ exports.handler = async function(event, context) {
     const db = client.db('diwali-greetings');
     const collection = db.collection('messages');
 
-    const { name, timestamp, userAgent } = JSON.parse(event.body);
+    const { name, timestamp, userAgent, photoUrl, photographer } = JSON.parse(event.body);
     const deviceType = /Mobile/.test(userAgent) ? '📱 Mobile' : '💻 Desktop';
     const date = new Date(timestamp);
 
@@ -24,6 +24,8 @@ exports.handler = async function(event, context) {
       timestamp: date,
       deviceType,
       userAgent,
+      photoUrl,
+      photographer,
       createdAt: new Date()
     };
     await collection.insertOne(messageDoc);
