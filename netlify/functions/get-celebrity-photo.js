@@ -3,7 +3,7 @@ const UNSPLASH_ACCESS_KEY = process.env.UNSPLASH_ACCESS_KEY;
 exports.handler = async function(event, context) {
   try {
     const response = await fetch(
-      `https://api.unsplash.com/photos/random?query=indians&count=1`,
+      `https://api.unsplash.com/photos/random?query=river&count=1`,
       {
         headers: {
           'Authorization': `Client-ID ${UNSPLASH_ACCESS_KEY}`
