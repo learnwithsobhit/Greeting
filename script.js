@@ -17,6 +17,16 @@ document.addEventListener('DOMContentLoaded', () => {
       userAgent: navigator.userAgent
     };
 
+    // Send to MongoDB
+    fetch('/.netlify/functions/store-greeting', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(visitorData)
+    })
+    .then(response => response.json())
+    .catch(error => console.error('Error storing greeting:', error));
+
+
     // Send notification via Netlify function
     fetch('/.netlify/functions/send-telegram', {
       method: 'POST',
