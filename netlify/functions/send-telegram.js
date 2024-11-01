@@ -1,16 +1,34 @@
+const { MongoClient } = require('mongodb');
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
+const MONGODB_URI = process.env.MONGODB_URI;
 
 exports.handler = async function(event, context) {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: JSON.stringify({ error: 'Method not allowed' }) };
   }
 
+  let client;
   try {
-    const { name, timestamp, userAgent } = JSON.parse(event.body);
+    // Connect to MongoDB
+    client = new MongoClient(MONGODB_URI);
+    await client.connect();
+    const db = client.db('diwali-greetings');
+    const collection = db.collection('messages');
 
+    const { name, timestamp, userAgent } = JSON.parse(event.body);
     const deviceType = /Mobile/.test(userAgent) ? '📱 Mobile' : '💻 Desktop';
     const date = new Date(timestamp);
+
+    // Store message in MongoDB
+    const messageDoc = {
+      name,
+      timestamp: date,
+      deviceType,
+      userAgent,
+      createdAt: new Date()
+    };
+    await collection.insertOne(messageDoc);
 
     const message = `
 🪔 *New Diwali Greeting!* 🪔
@@ -21,6 +39,7 @@ exports.handler = async function(event, context) {
 *Device:* ${deviceType}
 `;
 
+    // Send Telegram notification
     const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
       method: 'POST',
       headers: {
@@ -37,12 +56,17 @@ exports.handler = async function(event, context) {
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ message: 'Notification sent successfully', data })
+      body: JSON.stringify({ message: 'Notification sent and stored successfully', data })
     };
   } catch (error) {
+    console.error('Error:', error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: 'Failed to send notification' })
+      body: JSON.stringify({ error: 'Failed to process request' })
     };
+  } finally {
+    if (client) {
+      await client.close();
+    }
   }
 }; 
