@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const name = nameInput.value.trim();
 
     // First fetch the photo
-    fetch('/.netlify/functions/get-celebrity-photo')
+    fetch('/.netlify/functions/get-celebrity-photo?query=krishna || shiva')
       .then(photoResponse => photoResponse.json())
       .then(photoData => {
         // Create visitorData after we have the photo info
